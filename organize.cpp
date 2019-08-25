@@ -1,44 +1,55 @@
 #include<iostream>
-#include<map>
 using namespace std;
 
-const int INF=24;
+float last;
+int n;
 
 struct info
 {
-    int start,end;
+    string name;
+    float start,end;
 };
 
-map <string,struct info> lessons;
+const float INF=23.59;
+/*const*/ info NULLInfo;
 
-int find(int lastEnd)
+info lessons[1000];
+
+bool find(float lastEnd,info &ret)
 {
-    int earliestFinishTime=INF;
-    string earliestLessonName="";
-    map <string,struct info> end=lessons.end();
-    for(map <string,struct info>::i=lessons.begin();i!=end;i++)
+    for (int i = last; i < n; ++i)
     {
-         string name=i->first;
-         info lessonInfo=i->second;
-         if(lessonInfo.start>lastEnd&&lessonInfo.end<earliestFinishTime)
-         {
-            earliestFinishTime=lessonInfo.end;
-            earliestLessonName=name;
+        info lessonInfo=lessons[i];
+        if (lessonInfo.start>=lastEnd)
+        {
+            last=i+1;
+            ret=lessonInfo;
+            return true;
         }
     }
-    return name;
-}          
+    return false;
+}
 
 int main()
 {
-    int n;
     cin>>n;
     for(int i=0;i<n;i++)
     {
-        string lesson;
-        cin>>lesson;
         info lessonInfo;
-        cin>>lessonInfo.start>>lessonInfo.end;
-        lessons[lesson]=lessonInfo;
+        cin>>lessonInfo.name>>lessonInfo.start>>lessonInfo.end;
+        lessons[i]=lessonInfo;
+    }
+    // for (int i = 0; i < n; ++i)
+    // {
+    //     cout<<lessons[i].name<<" ";
+    // }
+    // cout<<endl;
+    last=0;
+    float lastEnd=0;
+    info lessonInfo;
+    while(find(lastEnd,lessonInfo))
+    {
+        lastEnd=lessonInfo.end;
+        cout<<lessonInfo.name<<" ";
     }
 }
